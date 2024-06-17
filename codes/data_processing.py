@@ -28,16 +28,22 @@ def segment_spectrum(spectrum, w=50, dw=25):
 
 def segment_spectrum_batch(spectra_mat, w=50, dw=25):
     """
-    Segment multiple raman spectra into overlapping windows
+    Segment multiple raman spectra into overlapping windows.
 
     Args:
-        spectra_mat (2D numpy array): array of input raman spectrum
+        spectra_mat (3D numpy array): array of input raman spectrum (batch, spectrum length, channels)
         w (int, optional): length of window. Defaults to 50.
         dw (int, optional): step size. Defaults to 25.
 
     Returns:
         list of numpy array: list containing arrays of segmented raman spectrum
     """
-    
-    return [spectra_mat[:,i:i+w] for i in range(0,spectra_mat.shape[1]-w,dw) ]
+    n_samples, spectrum_length, n_channels = spectra_mat.shape
+    segments = []
+
+    for i in range(0, spectrum_length - w + 1, dw):
+        segment = spectra_mat[:, i:i+w, :]
+        segments.append(segment)
+
+    return segments
 
